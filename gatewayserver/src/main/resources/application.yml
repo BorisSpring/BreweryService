@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+  application:
+    name: gatewayserver
+  profiles:
+    active: default
+  main:
+    web-application-type: reactive
+server:
+  port: 9091

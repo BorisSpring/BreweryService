@@ -1,0 +1,46 @@
+services:
+  network-deploy-service:
+      networks:
+        - brewery
+
+  microservice-common-config:
+    extends:
+      service: network-deploy-service
+    deploy:
+      resources:
+        limits:
+          memory: 600m
+    environment:
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.27.0.jar"
+      OTEL_METRICS_EXPORTER: none
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+
+  microservise-configserver-config:
+    extends:
+      service: microservice-common-config
+    depends_on:
+      cloudconfig:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: optional:configserver:http://cloudconfig:8888/
+
+  microservice-eureka-config:
+    extends:
+      service: microservise-configserver-config
+    depends_on:
+      eurekaserver:
+        condition: service_healthy
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka/
+      EUREKA_INSTANCE_PREFER_IP_ADRESS: true
+
+  mysql-common-config:
+    image: mysql
+    extends:
+      service: network-deploy-service
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_USER: root
+
+

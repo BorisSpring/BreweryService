@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: "cloudconfig"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["cloudconfig:8888"]
+  - job_name: "eurekaserver"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["eurekaserver:8761"]
+  - job_name: "beers"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["beers:8080"]
+  - job_name: "orders"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["orders:9000"]
+  - job_name: "inventory"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["inventory:8090"]
+  - job_name: "gatewayserver"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["gatewayserver:9091"]
